@@ -1,5 +1,10 @@
-#include<stdio.h>
-#include<string.h>
+#include <stdio.h>
+#include <string.h>
+
+#define HEAP_SIZE 2048 // idk how big this needs 2 b
+
+// the heap array we're maintaining
+int *HeapArray;
 
 // Anthony
 int allocate(int number_of_bytes)
@@ -35,6 +40,7 @@ void printheap(int block_number, int number_of_bytes)
 }
 
 void quit() {
+	free(HeapArray);
 	// free the heap we created woohoo!
 }
 
@@ -146,11 +152,11 @@ int parseCommand(char *line, size_t *n, char ***tokens) {
 }
 
 // Anthony
-int main()
+int main(int argc, char** argv)
 {
 	// statically allocate initial array
-
-
+	HeapArray = malloc(HEAP_SIZE * sizeof(int));
 	promptUser();
+	return 0;
 }
 
