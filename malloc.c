@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -14,8 +15,9 @@ int allocate(int number_of_bytes)
 	// return block number
 }
 
-// Mukesh
-void free(int block_number)
+// Mukesh 
+// (free is conflicting with C, needed to rename)
+void deallocate(int block_number)
 {
 	// frees the memory
 }
@@ -70,7 +72,7 @@ void promptUser() {
                 allocate([argv[1]);
             }
             else if (!strcmp(argv[0], "free")) {
-                free(argv[1]);
+                deallocate(argv[1]);
             }
             else if (!strcmp(argv[0], "blocklist")) {
                 blocklist();
