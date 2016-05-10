@@ -75,12 +75,14 @@ void promptUser() {
             if (!strcmp(argv[0], "allocate")) {
             	// int allocate(int number_of_bytes)
             	int number_of_bytes = atoi(argv[1]);
-                allocate(number_of_bytes);
+            	if (number_of_bytes > 0)
+                	allocate(number_of_bytes);
             }
             else if (!strcmp(argv[0], "free")) {
             	// void deallocate(int block_number)
             	int block_number = atoi(argv[1]);
-                deallocate(block_number);
+            	if (block_number > 0)
+                	deallocate(block_number);
             }
             else if (!strcmp(argv[0], "blocklist")) {
             	// void blocklist()
@@ -91,18 +93,23 @@ void promptUser() {
             	int the_block_number = atoi(argv[1]);
             	char CTW = argv[2][0];
             	int copies = atoi(argv[3]);
-                writeheap(the_block_number, CTW, copies);
+            	if ( (the_block_number > 0) && (copies > 0) )
+                	writeheap(the_block_number, CTW, copies);
             }
             else if (!strcmp(argv[0], "printheap")) {
             	// void printheap(int block_number, int number_of_bytes)
             	int block_number = atoi(argv[1]);
             	int number_of_bytes = atoi(argv[2]);
-                printheap(block_number, number_of_bytes);
+            	if ( (block_number > 0) && (number_of_bytes) > 0)
+                	printheap(block_number, number_of_bytes);
             }
             else if (!strcmp(argv[0], "quit")) {
             	// void quit() 
                 quit();
                 break;
+            }
+            else {
+            	printf("Invalid Command or Arguments\n");
             }
         }
         if (argc != -1) {
