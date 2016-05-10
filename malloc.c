@@ -42,8 +42,8 @@ void printheap(int block_number, int number_of_bytes)
 }
 
 void quit() {
-	free(HeapArray);
 	// free the heap we created woohoo!
+	free(HeapArray);
 }
 
 // shows a prompt to the user, gets an input line,
@@ -69,22 +69,36 @@ void promptUser() {
             //     printf("argv %d: %s\n", i, argv[i]);
             // }
             if (!strcmp(argv[0], "allocate")) {
-                allocate([argv[1]);
+            	// int allocate(int number_of_bytes)
+            	int number_of_bytes = atoi(argv[1]);
+                allocate(number_of_bytes);
             }
             else if (!strcmp(argv[0], "free")) {
-                deallocate(argv[1]);
+            	// void deallocate(int block_number)
+            	int block_number = atoi(argv[1]);
+                deallocate(block_number);
             }
             else if (!strcmp(argv[0], "blocklist")) {
+            	// void blocklist()
                 blocklist();
             }
             else if (!strcmp(argv[0], "writeheap")) { 
-                writeheap(argv[1], argv[2], argv[3]);
+            	// void writeheap(int the_block_number, char CTW, int copies)
+            	int the_block_number = atoi(argv[1]);
+            	char CTW = argv[2][0];
+            	int copies = atoi(argv[3]);
+                writeheap(the_block_number, CTW, copies);
             }
             else if (!strcmp(argv[0], "printheap")) {
-                printheap(argv[1], argv[2]);
+            	// void printheap(int block_number, int number_of_bytes)
+            	int block_number = atoi(argv[1]);
+            	int number_of_bytes = atoi(argv[2]);
+                printheap(block_number, number_of_bytes);
             }
             else if (!strcmp(argv[0], "quit")) {
+            	// void quit() 
                 quit();
+                break;
             }
         }
         if (argc != -1) {
