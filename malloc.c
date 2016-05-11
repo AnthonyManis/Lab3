@@ -97,20 +97,31 @@ int allocate(int number_of_bytes)
 }
 
 
+// args: *p is a pointer to a header
+// returns: true if the block is allocated, false
+// if unallocated
 bool is_allocated(int *p) {
     return *p & 1;
 }
 
+// args: *p is a pointer to a header
+// returns: the size of the block including header/footer
 int block_size(int *p) {
     return *p >> 1;
 }
 
+// args:
+//  *p is a pointer to a header
+//  bit is the value to which the allocated bit will be set
 void set_allocated_bit(int *p, bool bit) {
     *p = *p & 0xFFFFFFF0;
     if ( bit )
         *p += 1;    
 }
 
+// args:
+//  *p is a pointer to a header
+//  size is the value to which the block size will be set
 void set_block_size(int *p, int size) {
     size = size << 1;
     *p = (*p & 1) + size;
