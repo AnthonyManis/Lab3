@@ -7,19 +7,27 @@
 #include <string.h>
 #include <stdbool.h>
 
+// the heap array we're maintaining
 #define HEAP_SIZE 400
 
-// the heap array we're maintaining
-int *HeapArray;
+
+typedef struct Node {
+    char data;
+    int block_number;
+    int size;
+    bool allocated;
+} Node;
+
+Node *HeapArray;
 int nextBlockNumber = 1;
 
 // prototypes
 int indexOfBlockNumber(int block_number);
 int allocate(int number_of_bytes);
-bool is_allocated(int *p);
-int block_size(int *p);
-void set_allocated_bit(int *p, bool bit);
-void set_block_size(int *p, int size);
+bool is_allocated(Node *p);
+int block_size(Node *p);
+void set_allocated(Node *p, bool allocated);
+void set_block_size(Node *p, int size);
 void deallocate(int block_number);
 void blocklist();
 void writeheap(int block_number, char CTW, int copies);
@@ -58,29 +66,29 @@ int allocate(int number_of_bytes)
         printf("Could not allocate %d bytes.\n", number_of_bytes);
         return 0;
     }
-    int *p = HeapArray;
-    int words = (number_of_bytes / 4) + 2;
-    if ( (number_of_bytes % 4) != 0)
-        words++;
+    Node *p = HeapArray;
+    // int words = (number_of_bytes / 4) + 1;
+    // if ( (number_of_bytes % 4) != 0)
+    //     words++;
 
     // find a free header that fits words
     while (p) {
         // if free and enough space
-        if ( is_allocated(p) == 0 && block_size(p) >= words ) {
-            int *old_footer = p + block_size(p) - 1;
-            int *new_footer = p + words - 1;
-            set_allocated_bit(p, 1);
-            set_block_size(p, words);
-            *new_footer = *p;
-            // if not all the space was used, gotta split &
-            // make a new section for the remaining space
-            if (new_footer < old_footer) {
-                int *next_header = new_footer + 1;
-                set_allocated_bit(next_header, 0);
-                set_block_size(next_header, 
-                    old_footer - next_header + 1);
-                *old_footer = *next_header;
+        if ( is_allocated(p) == 0 && block_size(p) >= number_of_bytes + 1 ) {
+
+            // if we aren't allocating the whole block,
+            // it must be split and a new header must be made
+            // we don't split if the conditional fails,
+            // because number_of_bytes == *p - 2 results in a single
+            // word block which could never be allocated.
+            if (number_of_bytes < p->size - 2) {
+                Node *next_header = p + number_of_bytes + 1;
+                set_allocated(next_header, 0);
+                set_block_size(next_header, *p - number_of_bytes - 1);
             }
+            // finally, allocate the header
+            set_allocated(p, 1);
+            set_block_size(p, number_of_bytes + 1);
 
             // prints out a unique block number
             // start at 1 and increment
@@ -100,31 +108,28 @@ int allocate(int number_of_bytes)
 // args: *p is a pointer to a header
 // returns: true if the block is allocated, false
 // if unallocated
-bool is_allocated(int *p) {
-    return *p & 1;
+bool is_allocated(Node *p) {
+    return p->allocated;
 }
 
 // args: *p is a pointer to a header
 // returns: the size of the block including header/footer
-int block_size(int *p) {
-    return *p >> 1;
+int block_size(Node *p) {
+    return p->size;
 }
 
 // args:
 //  *p is a pointer to a header
 //  bit is the value to which the allocated bit will be set
-void set_allocated_bit(int *p, bool bit) {
-    *p = *p & 0xFFFFFFF0;
-    if ( bit )
-        *p += 1;    
+void set_allocated(Node *p, bool allocated) {
+    p->allocated = allocated;
 }
 
 // args:
 //  *p is a pointer to a header
 //  size is the value to which the block size will be set
-void set_block_size(int *p, int size) {
-    size = size << 1;
-    *p = (*p & 1) + size;
+void set_block_size(Node *p, int size) {
+    p->size = size;
 }
 
 // Mukesh 
@@ -155,7 +160,7 @@ void writeheap(int block_number, char CTW, int copies)
 	for (i = 0; i < block_size || i < copies; ++i)
 	{
 		// convert char to binary number
-		ArrayHeap[index] = (int)CTW;
+		HeapArray[index] = (int)CTW;
 		++index;
 	}
 }
@@ -169,16 +174,16 @@ void printheap(int block_number, int number_of_bytes)
 	int i;
 	for (i = 0; i < number_of_bytes; ++i)
 	{
-		if (ArrayHeap[indice])
+		if (HeapArray[indice])
 		{
 			i += index;
 			int temp;
 			for (temp = 0; temp < index; ++temp)
 			{
-				putchar((char)ArrayHeap[indice]);
+				putchar((char)HeapArray[indice]);
 				++indice;
 			}
-			index = ArrayHeap[indice];
+			index = HeapArray[indice];
 		}
 		else
 		{
@@ -322,11 +327,10 @@ int parseCommand(char *line, size_t *n, char ***tokens) {
 }
 
 void initialize() {
-    // HeapArray[0] and [HEAP_SIZE - 1] are H/F
+    // HeapArray[0] is Header
     // Initial value is unallocated, size HEAP_SIZE
     set_block_size(HeapArray, HEAP_SIZE);
-    set_allocated_bit(HeapArray, 0);
-    *(HeapArray + HEAP_SIZE) = *HeapArray;
+    set_allocated(HeapArray, 0);
 }
 
 
@@ -334,7 +338,7 @@ void initialize() {
 int main(int argc, char** argv)
 {
 	// statically allocate initial array
-	HeapArray = malloc(HEAP_SIZE * sizeof(int));
+	HeapArray = malloc(HEAP_SIZE * sizeof(Node));
     initialize();
 	promptUser();
 	return 0;
