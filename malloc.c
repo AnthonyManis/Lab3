@@ -13,6 +13,22 @@
 int *HeapArray;
 int nextBlockNumber = 1;
 
+// prototypes
+int indexOfBlockNumber(int block_number);
+int allocate(int number_of_bytes);
+bool is_allocated(int *p);
+int block_size(int *p);
+void set_allocated_bit(int *p, bool bit);
+void set_block_size(int *p, int size);
+void deallocate(int block_number);
+void blocklist();
+void writeheap(int block_number, char CTW, int copies);
+void printheap(int block_number, int number_of_bytes);
+void quit();
+void promptUser();
+int parseCommand(char *line, size_t *n, char ***tokens);
+void initialize();
+
 int indexOfBlockNumber(int block_number)
 {
 	if (block_number == 1)
