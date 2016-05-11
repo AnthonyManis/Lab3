@@ -80,7 +80,7 @@ int allocate(int number_of_bytes)
 
     // spec says we need to allocate in multiples of 1 word
     // figure out how many words there are
-    int words = (number of bytes / 4);
+    int words = (number_of_bytes / 4);
     if ( number_of_bytes % 4 != 0 )
         words++;
     
