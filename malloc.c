@@ -10,7 +10,6 @@
 // the heap array we're maintaining
 #define HEAP_SIZE 400
 
-
 typedef struct Node {
     char data;
     int block_number;
@@ -24,6 +23,8 @@ int nextBlockNumber = 1;
 // prototypes
 int indexOfBlockNumber(int block_number);
 int allocate(int number_of_bytes);
+void set_block_number(Node *p, int block_number);
+int block_number(Node *p);
 bool is_allocated(Node *p);
 int block_size(Node *p);
 void set_allocated(Node *p, bool allocated);
@@ -92,17 +93,13 @@ int allocate(int number_of_bytes)
             if (number_of_bytes < p->size - 2) {
                 Node *next_header = p + number_of_bytes + 1;
                 set_allocated(next_header, 0);
-                set_block_size(next_header, *p - number_of_bytes - 1);
+                set_block_size(next_header, p->size - number_of_bytes - 1);
             }
             // finally, allocate the header
             set_allocated(p, 1);
             set_block_size(p, number_of_bytes + 1);
+            set_block_number(p, nextBlockNumber);
 
-            // prints out a unique block number
-            // start at 1 and increment
-            // return block number
-            // we may need to store a list of block numbers * pointers
-            // for the purpose of printing
             printf("%d\n", nextBlockNumber);
             return nextBlockNumber++;
         }
@@ -112,29 +109,60 @@ int allocate(int number_of_bytes)
     return 0;
 }
 
+//// Sets the data of a node.
+// args:
+//  *p is a pointer to a node
+// data is the value to which the data will be set
+void set_data(Node *p, char data) {
+    p->data = data;
+}
 
-// args: *p is a pointer to a header
+//// Gets the data from a node.
+// args: *p is a pointer to a Node
+char data(Node *p) {
+    return p-> data;
+}
+
+//// Sets the block_number of a node.
+// args:
+//  *p is a pointer to a node
+//  block_number is the value to which the block_number will be set
+void set_block_number(Node *p, int block_number) {
+    p->block_number = block_number;
+}
+
+//// Gets the block_number from a node.
+// args: *p is a pointer to a node
+int block_number(Node *p) {
+    return p->block_number;
+}
+
+//// Gets the allocated status from a node.
+// args: *p is a pointer to a node
 // returns: true if the block is allocated, false
 // if unallocated
 bool is_allocated(Node *p) {
     return p->allocated;
 }
 
-// args: *p is a pointer to a header
-// returns: the size of the block including header/footer
-int block_size(Node *p) {
-    return p->size;
-}
-
+//// Sets the allocated status of a node.
 // args:
-//  *p is a pointer to a header
+//  *p is a pointer to a node
 //  bit is the value to which the allocated bit will be set
 void set_allocated(Node *p, bool allocated) {
     p->allocated = allocated;
 }
 
+//// Gets the block_size from a node.
+// args: *p is a pointer to a node
+// returns: the size of the block including header/footer
+int block_size(Node *p) {
+    return p->size;
+}
+
+//// Sets the block_size of a node.
 // args:
-//  *p is a pointer to a header
+//  *p is a pointer to a node
 //  size is the value to which the block size will be set
 void set_block_size(Node *p, int size) {
     p->size = size;
@@ -232,35 +260,56 @@ void promptUser() {
             //     printf("argv %d: %s\n", i, argv[i]);
             // }
             if (!strcmp(argv[0], "allocate")) {
-            	// int allocate(int number_of_bytes)
-            	int number_of_bytes = atoi(argv[1]);
-            	if (number_of_bytes > 0)
-                	allocate(number_of_bytes);
+                // first check that there's an appropriate number of arguments
+                if (argc == 2) {
+                	// int allocate(int number_of_bytes)
+                	int number_of_bytes = atoi(argv[1]);
+                	if (number_of_bytes > 0)
+                    	allocate(number_of_bytes);
+                }
+                else {
+                    printf("Usage: allocate [number_of_bytes]\n");
+                }
             }
             else if (!strcmp(argv[0], "free")) {
-            	// void deallocate(int block_number)
-            	int block_number = atoi(argv[1]);
-            	if (block_number > 0)
-                	deallocate(block_number);
+                if (argc == 2) {
+                	// void deallocate(int block_number)
+                	int block_number = atoi(argv[1]);
+                	if (block_number > 0)
+                    	deallocate(block_number);
+                }
+                else {
+                    printf("Usage: free [block_number]\n");
+                }
             }
             else if (!strcmp(argv[0], "blocklist")) {
             	// void blocklist()
                 blocklist();
             }
             else if (!strcmp(argv[0], "writeheap")) { 
-            	// void writeheap(int the_block_number, char CTW, int copies)
-            	int the_block_number = atoi(argv[1]);
-            	char CTW = argv[2][0];
-            	int copies = atoi(argv[3]);
-            	if ( (the_block_number > 0) && (copies > 0) )
-                	writeheap(the_block_number, CTW, copies);
+                if (argc == 4) {
+                	// void writeheap(int the_block_number, char CTW, int copies)
+                	int the_block_number = atoi(argv[1]);
+                	char CTW = argv[2][0];
+                	int copies = atoi(argv[3]);
+                	if ( (the_block_number > 0) && (copies > 0) )
+                    	writeheap(the_block_number, CTW, copies);
+                }
+                else {
+                    printf("Usage: writeheap [block_number] [char] [amount]\n");
+                }
             }
             else if (!strcmp(argv[0], "printheap")) {
-            	// void printheap(int block_number, int number_of_bytes)
-            	int block_number = atoi(argv[1]);
-            	int number_of_bytes = atoi(argv[2]);
-            	if ( (block_number > 0) && (number_of_bytes) > 0)
-                	printheap(block_number, number_of_bytes);
+                if (argc == 3) {
+                	// void printheap(int block_number, int number_of_bytes)
+                	int block_number = atoi(argv[1]);
+                	int number_of_bytes = atoi(argv[2]);
+                	if ( (block_number > 0) && (number_of_bytes) > 0)
+                    	printheap(block_number, number_of_bytes);
+                }
+                else {
+                    printf("Usage: printheap [block_number] [amount]\n");
+                }
             }
             else if (!strcmp(argv[0], "quit")) {
             	// void quit() 
@@ -268,7 +317,7 @@ void promptUser() {
                 break;
             }
             else {
-            	printf("Invalid Command or Arguments\n");
+            	printf("Invalid Command\n");
             }
         }
         if (argc != -1) {
@@ -342,6 +391,14 @@ void initialize() {
     // Initial value is unallocated, size HEAP_SIZE
     set_block_size(HeapArray, HEAP_SIZE);
     set_allocated(HeapArray, 0);
+    int i;
+    for (i = 0 ; i < HEAP_SIZE ; i++) {
+        HeapArray[i].size = 0;
+        HeapArray[i].block_number = 0;
+        HeapArray[i].data = '\0';
+        HeapArray[i].allocated = 0;
+    }
+    HeapArray[0].size = HEAP_SIZE;
 }
 
 
