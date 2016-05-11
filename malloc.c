@@ -249,35 +249,56 @@ void promptUser() {
             //     printf("argv %d: %s\n", i, argv[i]);
             // }
             if (!strcmp(argv[0], "allocate")) {
-            	// int allocate(int number_of_bytes)
-            	int number_of_bytes = atoi(argv[1]);
-            	if (number_of_bytes > 0)
-                	allocate(number_of_bytes);
+                // first check that there's an appropriate number of arguments
+                if (argc == 2) {
+                	// int allocate(int number_of_bytes)
+                	int number_of_bytes = atoi(argv[1]);
+                	if (number_of_bytes > 0)
+                    	allocate(number_of_bytes);
+                }
+                else {
+                    printf("Usage: allocate [number_of_bytes]\n");
+                }
             }
             else if (!strcmp(argv[0], "free")) {
-            	// void deallocate(int block_number)
-            	int block_number = atoi(argv[1]);
-            	if (block_number > 0)
-                	deallocate(block_number);
+                if (argc == 2) {
+                	// void deallocate(int block_number)
+                	int block_number = atoi(argv[1]);
+                	if (block_number > 0)
+                    	deallocate(block_number);
+                }
+                else {
+                    printf("Usage: free [block_number]\n");
+                }
             }
             else if (!strcmp(argv[0], "blocklist")) {
             	// void blocklist()
                 blocklist();
             }
             else if (!strcmp(argv[0], "writeheap")) { 
-            	// void writeheap(int the_block_number, char CTW, int copies)
-            	int the_block_number = atoi(argv[1]);
-            	char CTW = argv[2][0];
-            	int copies = atoi(argv[3]);
-            	if ( (the_block_number > 0) && (copies > 0) )
-                	writeheap(the_block_number, CTW, copies);
+                if (argc == 4) {
+                	// void writeheap(int the_block_number, char CTW, int copies)
+                	int the_block_number = atoi(argv[1]);
+                	char CTW = argv[2][0];
+                	int copies = atoi(argv[3]);
+                	if ( (the_block_number > 0) && (copies > 0) )
+                    	writeheap(the_block_number, CTW, copies);
+                }
+                else {
+                    printf("Usage: writeheap [block_number] [char] [amount]\n");
+                }
             }
             else if (!strcmp(argv[0], "printheap")) {
-            	// void printheap(int block_number, int number_of_bytes)
-            	int block_number = atoi(argv[1]);
-            	int number_of_bytes = atoi(argv[2]);
-            	if ( (block_number > 0) && (number_of_bytes) > 0)
-                	printheap(block_number, number_of_bytes);
+                if (argc == 3) {
+                	// void printheap(int block_number, int number_of_bytes)
+                	int block_number = atoi(argv[1]);
+                	int number_of_bytes = atoi(argv[2]);
+                	if ( (block_number > 0) && (number_of_bytes) > 0)
+                    	printheap(block_number, number_of_bytes);
+                }
+                else {
+                    printf("Usage: printheap [block_number] [amount]\n");
+                }
             }
             else if (!strcmp(argv[0], "quit")) {
             	// void quit() 
@@ -285,7 +306,7 @@ void promptUser() {
                 break;
             }
             else {
-            	printf("Invalid Command or Arguments\n");
+            	printf("Invalid Command\n");
             }
         }
         if (argc != -1) {
