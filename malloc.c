@@ -6,10 +6,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#define HEAP_SIZE 2048 // idk how big this needs 2 b
+#define HEAP_SIZE 400
 
 // the heap array we're maintaining
 int *HeapArray;
+int nextBlockNumber = 1;
 
 int indexOfBlockNumber(int block_number)
 {
@@ -39,6 +40,25 @@ int allocate(int number_of_bytes)
 	// prints out a unique block number
 	// start at 1 and increment
 	// return block number
+
+
+bool is_allocated(int *p) {
+    return *p & 1;
+}
+
+int block_size(int *p) {
+    return *p >> 1;
+}
+
+void set_allocated_bit(int *p, bool bit) {
+    *p = *p & 0xFFFFFFF0;
+    if ( bit )
+        *p += 1;    
+}
+
+void set_block_size(int *p, int size) {
+    size = size << 1;
+    *p = (*p & 1) + size;
 }
 
 // Mukesh 
@@ -235,11 +255,21 @@ int parseCommand(char *line, size_t *n, char ***tokens) {
     return count;
 }
 
+void initialize() {
+    // HeapArray[0] and [HEAP_SIZE - 1] are H/F
+    // Initial value is unallocated, size HEAP_SIZE
+    set_block_size(HeapArray, HEAP_SIZE);
+    set_allocated_bit(HeapArray, 0);
+    *(HeapArray + HEAP_SIZE) = *HeapArray;
+}
+
+
 // Anthony
 int main(int argc, char** argv)
 {
 	// statically allocate initial array
 	HeapArray = malloc(HEAP_SIZE * sizeof(int));
+    initialize();
 	promptUser();
 	return 0;
 }
