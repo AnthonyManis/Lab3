@@ -75,29 +75,34 @@ int allocate(int number_of_bytes)
         printf("Could not allocate %d bytes.\n", number_of_bytes);
         return 0;
     }
+
     Node *p = HeapArray;
-    // int words = (number_of_bytes / 4) + 1;
-    // if ( (number_of_bytes % 4) != 0)
-    //     words++;
+
+    // spec says we need to allocate in multiples of 1 word
+    // figure out how many words there are
+    int words = (number of bytes / 4);
+    if ( number_of_bytes % 4 != 0 )
+        words++;
+    
+    // 1 word is 4 nodes in our implementation
+    int nodes_to_allocate = 4 * words;
 
     // find a free header that fits words
     while (p) {
         // if free and enough space
-        if ( is_allocated(p) == 0 && block_size(p) >= number_of_bytes + 1 ) {
+        if ( is_allocated(p) == 0 && block_size(p) >= nodes_to_allocate) {
 
             // if we aren't allocating the whole block,
             // it must be split and a new header must be made
-            // we don't split if the conditional fails,
-            // because number_of_bytes == *p - 2 results in a single
-            // word block which could never be allocated.
-            if (number_of_bytes < p->size - 2) {
-                Node *next_header = p + number_of_bytes + 1;
+            if (nodes_to_allocate < p->size) {
+                Node *next_header = p + nodes_to_allocate;
                 set_allocated(next_header, 0);
-                set_block_size(next_header, p->size - number_of_bytes - 1);
+                set_block_size(next_header, p->size - nodes_to_allocate);
+                set_block_number(next_header, 0);
             }
             // finally, allocate the header
             set_allocated(p, 1);
-            set_block_size(p, number_of_bytes + 1);
+            set_block_size(p, nodes_to_allocate);
             set_block_number(p, nextBlockNumber);
 
             printf("%d\n", nextBlockNumber);
