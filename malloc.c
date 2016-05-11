@@ -54,9 +54,10 @@ int indexOfBlockNumber(int block_number)
 // Anthony
 int allocate(int number_of_bytes)
 {
-    if (number_of_bytes <= 0 )
-        return;
-
+    if (number_of_bytes <= 0 ) {
+        printf("Could not allocate %d bytes.\n", number_of_bytes);
+        return 0;
+    }
     int *p = HeapArray;
     int words = (number_of_bytes / 4) + 2;
     if ( (number_of_bytes % 4) != 0)
@@ -91,6 +92,8 @@ int allocate(int number_of_bytes)
         }
         p = p + block_size(p);
     }
+    printf("Could not allocate %d bytes.\n", number_of_bytes);
+    return 0;
 }
 
 
@@ -325,4 +328,3 @@ int main(int argc, char** argv)
 	promptUser();
 	return 0;
 }
-
