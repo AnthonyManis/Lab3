@@ -63,31 +63,22 @@ int allocate(int number_of_bytes)
 
     Node *p = HeapArray;
 
-    // spec says we need to allocate in multiples of 1 word
-    // figure out how many words there are
-    int words = (number_of_bytes / 4);
-    if ( number_of_bytes % 4 != 0 )
-        words++;
-    
-    // 1 word is 4 nodes in our implementation
-    int nodes_to_allocate = 4 * words;
-
-    // find a free header that fits words
+    // find a free header that fits number_of_bytes
     while (p) {
         // if free and enough space
-        if ( is_allocated(p) == 0 && block_size(p) >= nodes_to_allocate) {
+        if ( is_allocated(p) == 0 && block_size(p) >= number_of_bytes) {
 
             // if we aren't allocating the whole block,
             // it must be split and a new header must be made
-            if (nodes_to_allocate < p->size) {
-                Node *next_header = p + nodes_to_allocate;
+            if (number_of_bytes < p->size) {
+                Node *next_header = p + number_of_bytes;
                 set_allocated(next_header, 0);
-                set_block_size(next_header, p->size - nodes_to_allocate);
+                set_block_size(next_header, p->size - number_of_bytes);
                 set_block_number(next_header, 0);
             }
             // finally, allocate the header
             set_allocated(p, 1);
-            set_block_size(p, nodes_to_allocate);
+            set_block_size(p, number_of_bytes);
             set_block_number(p, nextBlockNumber);
 
             printf("%d\n", nextBlockNumber);
