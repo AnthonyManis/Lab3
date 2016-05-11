@@ -42,8 +42,15 @@ int indexOfBlockNumber(int block_number)
 	if (block_number == 1)
 		return 0;
 
-	int index = 0;
-	int i;
+	int i = 0;
+
+	while (HeapArray[i].block_number != block_number)
+	{
+		i += HeapArray[i].size;
+	}
+	
+	return i;
+/*
 	for (i = 0; i < block_number; ++i)
 	{
 		if (HeapArray[i] == 0)
@@ -57,6 +64,7 @@ int indexOfBlockNumber(int block_number)
 			index += HeapArray[i] + 2;
 	}
 	return index;
+*/
 }	
 
 // Anthony
@@ -153,14 +161,13 @@ void writeheap(int block_number, char CTW, int copies)
 	// if the block number exists
 	// go to that block number
 	int index = indexOfBlockNumber(block_number);
-	int block_size = index;
-	int index += 1;
 	int i;
+	int block_size = HeapArray[index].size;
 	// copy as many as the header of the block number says there are spaces
 	for (i = 0; i < block_size || i < copies; ++i)
 	{
 		// convert char to binary number
-		HeapArray[index] = (int)CTW;
+		HeapArray[index].data = CTW;
 		++index;
 	}
 }
@@ -170,10 +177,14 @@ void printheap(int block_number, int number_of_bytes)
 {
 	// prints out all the bytes starting at the block number given
 	int index = indexOfBlockNumber(block_number);
-	int indice = index + 1;
 	int i;
 	for (i = 0; i < number_of_bytes; ++i)
 	{
+		printf("%c",HeapArray[index].data);
+		++index;
+	}
+	printf("\n");
+/*
 		if (HeapArray[indice])
 		{
 			i += index;
@@ -190,7 +201,7 @@ void printheap(int block_number, int number_of_bytes)
 			putchar('0');
 			++i;
 		}
-	}
+*/
 }
 
 void quit() {
