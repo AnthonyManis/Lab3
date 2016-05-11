@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define HEAP_SIZE 400
 
@@ -37,9 +38,39 @@ int indexOfBlockNumber(int block_number)
 // Anthony
 int allocate(int number_of_bytes)
 {
+    if (number_of_bytes <= 0 )
+        return;
+
 	// prints out a unique block number
 	// start at 1 and increment
 	// return block number
+    int *p = HeapArray;
+    int words = (number_of_bytes / 4) + 2;
+    if ( (number_of_bytes % 4) != 0)
+        words++;
+
+    // find a free header that fits words
+    while (p) {
+        // free and enough words
+        if ( is_allocated(p) == 0 && block_size(p) >= words ) {
+            int *old_footer = p + block_size(p) - 1;
+            int *new_footer = p + words - 1;
+            set_allocated_bit(p, 1);
+            set_block_size(p, words);
+            *new_footer = *p;
+            // gotta make a new section for the remaining space
+            if (new_footer < old_footer) {
+                int *next_header = new_footer + 1;
+                set_allocated_bit(next_header, 0);
+                set_block_size(next_header, old_footer - next_header + 1);
+                *old_footer = *next_header;
+            }
+
+            return nextBlockNumber++;
+        }
+    }
+
+}
 
 
 bool is_allocated(int *p) {
