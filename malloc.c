@@ -41,9 +41,6 @@ int allocate(int number_of_bytes)
     if (number_of_bytes <= 0 )
         return;
 
-	// prints out a unique block number
-	// start at 1 and increment
-	// return block number
     int *p = HeapArray;
     int words = (number_of_bytes / 4) + 2;
     if ( (number_of_bytes % 4) != 0)
@@ -51,25 +48,33 @@ int allocate(int number_of_bytes)
 
     // find a free header that fits words
     while (p) {
-        // free and enough words
+        // if free and enough space
         if ( is_allocated(p) == 0 && block_size(p) >= words ) {
             int *old_footer = p + block_size(p) - 1;
             int *new_footer = p + words - 1;
             set_allocated_bit(p, 1);
             set_block_size(p, words);
             *new_footer = *p;
-            // gotta make a new section for the remaining space
+            // if not all the space was used, gotta split &
+            // make a new section for the remaining space
             if (new_footer < old_footer) {
                 int *next_header = new_footer + 1;
                 set_allocated_bit(next_header, 0);
-                set_block_size(next_header, old_footer - next_header + 1);
+                set_block_size(next_header, 
+                    old_footer - next_header + 1);
                 *old_footer = *next_header;
             }
 
+            // prints out a unique block number
+            // start at 1 and increment
+            // return block number
+            // we may need to store a list of block numbers * pointers
+            // for the purpose of printing
+            printf("%d\n", nextBlockNumber);
             return nextBlockNumber++;
         }
+        p = p + block_size(p);
     }
-
 }
 
 
