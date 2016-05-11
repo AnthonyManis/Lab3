@@ -359,6 +359,14 @@ void initialize() {
     // Initial value is unallocated, size HEAP_SIZE
     set_block_size(HeapArray, HEAP_SIZE);
     set_allocated(HeapArray, 0);
+    int i;
+    for (i = 0 ; i < HEAP_SIZE ; i++) {
+        HeapArray[i].size = 0;
+        HeapArray[i].block_number = 0;
+        HeapArray[i].data = '\0';
+        HeapArray[i].allocated = 0;
+    }
+    HeapArray[0].size = HEAP_SIZE;
 }
 
 
