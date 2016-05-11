@@ -11,6 +11,28 @@
 // the heap array we're maintaining
 int *HeapArray;
 
+int indexOfBlockNumber(int block_number)
+{
+	if (block_number == 1)
+		return 0;
+
+	int index = 0;
+	int i;
+	for (i = 0; i < block_number; ++i)
+	{
+		if (HeapArray[i] == 0)
+		{
+			while (HeapArray[i] == 0)
+			{
+				++index;
+			}
+		}
+		else
+			index += HeapArray[i] + 2;
+	}
+	return index;
+}	
+
 // Anthony
 int allocate(int number_of_bytes)
 {
@@ -34,15 +56,50 @@ void blocklist()
 }
 
 // Ryan
-void writeheap(int the_block_number, char CTW, int copies)
+void writeheap(int block_number, char CTW, int copies)
 {
 	// write characters to blocks in the heap
+	// if the block number exists
+	// go to that block number
+	int index = indexOfBlockNumber(block_number);
+	int block_size = index;
+	int index += 1;
+	int i;
+	// copy as many as the header of the block number says there are spaces
+	for (i = 0; i < block_size || i < copies; ++i)
+	{
+		// convert char to binary number
+		ArrayHeap[index] = (int)CTW;
+		++index;
+	}
 }
 
 // Ryan
 void printheap(int block_number, int number_of_bytes)
 {
 	// prints out all the bytes starting at the block number given
+	int index = indexOfBlockNumber(block_number);
+	int indice = index + 1;
+	int i;
+	for (i = 0; i < number_of_bytes; ++i)
+	{
+		if (ArrayHeap[indice])
+		{
+			i += index;
+			int temp;
+			for (temp = 0; temp < index; ++temp)
+			{
+				putchar((char)ArrayHeap[indice]);
+				++indice;
+			}
+			index = ArrayHeap[indice];
+		}
+		else
+		{
+			putchar('0');
+			++i;
+		}
+	}
 }
 
 void quit() {
