@@ -64,7 +64,7 @@ int allocate(int number_of_bytes)
     Node *p = HeapArray;
 
     // find a free header that fits number_of_bytes
-    while (p) {
+    while (p < HeapArray + HEAP_SIZE) {
         // if free and enough space
         if ( is_allocated(p) == 0 && block_size(p) >= number_of_bytes) {
 
@@ -173,7 +173,7 @@ void writeheap(int block_number, char CTW, int copies)
 	int i;
 	int block_size = HeapArray[index].size;
 	// copy as many as the header of the block number says there are spaces
-	for (i = 0; i < block_size && i < copies; ++i)
+	for (i = 0; index < HEAP_SIZE && i < block_size && i < copies; ++i)
 	{
 		// convert char to binary number
 		HeapArray[index].data = CTW;
@@ -187,7 +187,7 @@ void printheap(int block_number, int number_of_bytes)
 	// prints out all the bytes starting at the block number given
 	int index = indexOfBlockNumber(block_number);
 	int i;
-	for (i = 0; i < number_of_bytes; ++i)
+	for (i = 0; index < HEAP_SIZE && i < number_of_bytes; ++i)
 	{
 		printf("%c",HeapArray[index].data);
 		++index;
