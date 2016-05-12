@@ -350,6 +350,9 @@ int parseCommand(char *line, size_t *n, char ***tokens) {
 }
 
 void initialize() {
+    // statically allocate initial array
+    HeapArray = malloc(HEAP_SIZE * sizeof(Node));
+
     // HeapArray[0] is Header
     // Initial value is unallocated, size HEAP_SIZE
     set_block_size(HeapArray, HEAP_SIZE);
@@ -368,8 +371,6 @@ void initialize() {
 // Anthony
 int main(int argc, char** argv)
 {
-	// statically allocate initial array
-	HeapArray = malloc(HEAP_SIZE * sizeof(Node));
     initialize();
 	promptUser();
 	return 0;
