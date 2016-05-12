@@ -7,8 +7,11 @@
 #include <string.h>
 #include <stdbool.h>
 
-// the heap array we're maintaining
 #define HEAP_SIZE 400
+
+// the heap array we're maintaining
+Node *HeapArray;
+int nextBlockNumber = 1;
 
 typedef struct Node {
     char data;
@@ -17,25 +20,26 @@ typedef struct Node {
     bool allocated;
 } Node;
 
-Node *HeapArray;
-int nextBlockNumber = 1;
-
-// prototypes
-int indexOfBlockNumber(int block_number);
+// Prototypes --- User Functions
 int allocate(int number_of_bytes);
-void set_block_number(Node *p, int block_number);
-int block_number(Node *p);
-bool is_allocated(Node *p);
-int block_size(Node *p);
-void set_allocated(Node *p, bool allocated);
-void set_block_size(Node *p, int size);
 void deallocate(int block_number);
 void blocklist();
 void writeheap(int block_number, char CTW, int copies);
 void printheap(int block_number, int number_of_bytes);
 void quit();
+
+// Prototypes --- Interface Functions
 void promptUser();
 int parseCommand(char *line, size_t *n, char ***tokens);
+
+// Prototypes --- Helper Functions
+int indexOfBlockNumber(int block_number);
+int block_number(Node *p);
+void set_block_number(Node *p, int block_number);
+bool is_allocated(Node *p);
+void set_allocated(Node *p, bool allocated);
+int block_size(Node *p);
+void set_block_size(Node *p, int size);
 void initialize();
 
 int indexOfBlockNumber(int block_number)
