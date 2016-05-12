@@ -74,10 +74,10 @@ int allocate(int number_of_bytes)
 
             // if we aren't allocating the whole block,
             // it must be split and a new header must be made
-    if (number_of_bytes < p->size) {
-        Node *next_header = p + number_of_bytes;
-        set_allocated(next_header, 0);
-            set_block_size(next_header, p->size - number_of_bytes);
+            if (number_of_bytes < p->size) {
+                Node *next_header = p + number_of_bytes;
+                set_allocated(next_header, 0);
+                set_block_size(next_header, p->size - number_of_bytes);
                 set_block_number(next_header, 0);
             }
             // finally, allocate the header
@@ -226,75 +226,75 @@ void promptUser() {
             // for (i = 0 ; i < argc ; i++) {
             //     printf("argv %d: %s\n", i, argv[i]);
             // }
-                    if (!strcmp(argv[0], "allocate")) {
+            if (!strcmp(argv[0], "allocate")) {
                 // first check that there's an appropriate number of arguments
-                        if (argc == 2) {
+                if (argc == 2) {
                     // int allocate(int number_of_bytes)
-                            int number_of_bytes = atoi(argv[1]);
-                            if (number_of_bytes > 0)
-allocate(number_of_bytes);
-}
-else {
-    printf("Usage: allocate [number_of_bytes]\n");
-}
-}
-else if (!strcmp(argv[0], "free")) {
-    if (argc == 2) {
+                    int number_of_bytes = atoi(argv[1]);
+                    if (number_of_bytes > 0)
+                        allocate(number_of_bytes);
+                }
+                else {
+                    printf("Usage: allocate [number_of_bytes]\n");
+                }
+            }
+            else if (!strcmp(argv[0], "free")) {
+                if (argc == 2) {
                     // void deallocate(int block_number)
-        int block_number = atoi(argv[1]);
-        if (block_number > 0)
-deallocate(block_number);
-}
-else {
-    printf("Usage: free [block_number]\n");
-}
-}
-else if (!strcmp(argv[0], "blocklist")) {
+                    int block_number = atoi(argv[1]);
+                    if (block_number > 0)
+                        deallocate(block_number);
+                }
+                else {
+                    printf("Usage: free [block_number]\n");
+                }
+            }
+            else if (!strcmp(argv[0], "blocklist")) {
                 // void blocklist()
-    blocklist();
-}
-else if (!strcmp(argv[0], "writeheap")) { 
-    if (argc == 4) {
+                blocklist();
+            }
+            else if (!strcmp(argv[0], "writeheap")) { 
+                if (argc == 4) {
                     // void writeheap(int the_block_number, char CTW, int copies)
-        int the_block_number = atoi(argv[1]);
-        char CTW = argv[2][0];
-        int copies = atoi(argv[3]);
-        if ( (the_block_number > 0) && (copies > 0) )
-    writeheap(the_block_number, CTW, copies);
-}
-else {
-    printf("Usage: writeheap [block_number] [char] [amount]\n");
-}
-}
-else if (!strcmp(argv[0], "printheap")) {
-    if (argc == 3) {
+                    int the_block_number = atoi(argv[1]);
+                    char CTW = argv[2][0];
+                    int copies = atoi(argv[3]);
+                    if ( (the_block_number > 0) && (copies > 0) )
+                        writeheap(the_block_number, CTW, copies);
+                }
+                else {
+                    printf("Usage: writeheap [block_number] [char] [amount]\n");
+                }
+            }
+            else if (!strcmp(argv[0], "printheap")) {
+                if (argc == 3) {
                     // void printheap(int block_number, int number_of_bytes)
-        int block_number = atoi(argv[1]);
-        int number_of_bytes = atoi(argv[2]);
-        if ( (block_number > 0) && (number_of_bytes) > 0)
-printheap(block_number, number_of_bytes);
-}
-else {
-    printf("Usage: printheap [block_number] [amount]\n");
-}
-}
-else if (!strcmp(argv[0], "quit")) {
+                    int block_number = atoi(argv[1]);
+                    int number_of_bytes = atoi(argv[2]);
+                    if ( (block_number > 0) && (number_of_bytes) > 0)
+                        printheap(block_number, number_of_bytes);
+                }
+                else {
+                    printf("Usage: printheap [block_number] [amount]\n");
+                }
+            }
+            else if (!strcmp(argv[0], "quit")) {
                 // void quit() 
-    quit();
-        break;
-    }
-    else {
-        printf("Invalid Command\n");
-    }
-}
-if (argc != -1) {
-        int i;
-        for (i = 0 ; i < argc ; i++) {
-            free(argv[i]);
+                quit();
+                break;
+            }
+            else {
+                printf("Invalid Command\n");
+            }
         }
+        if (argc != -1) {
+            int i;
+            for (i = 0 ; i < argc ; i++) {
+                free(argv[i]);
+            }
+        }
+        free(argv);
     }
-    free(argv);
-}
 }
 
 // parses a line into command & any arguments,
@@ -308,31 +308,31 @@ int parseCommand(char *line, size_t *n, char ***tokens) {
         *n = 2;
         *tokens = malloc(*n * sizeof(char*));
         if (!*tokens)
-return -1;
-}
-
-
-char *delims = " \t\n";
-char *token_begin = NULL;
-char *token_end = line;
-size_t token_size = 0;
-size_t count = 0;
-
-while (*token_end) {
-    if (count >= *n) {
-    *n = *n * 2;
-    *tokens = realloc(*tokens, *n * sizeof(char*));
-    if (!*tokens)
-        return -1;
-}
-if (!strchr(delims, *token_end)) {
-            // ignore leading whitespace
-    if (!token_begin) {
-        token_begin = token_end;
+            return -1;
     }
-    token_size++;
-    token_end++;
-}
+
+
+    char *delims = " \t\n";
+    char *token_begin = NULL;
+    char *token_end = line;
+    size_t token_size = 0;
+    size_t count = 0;
+
+    while (*token_end) {
+        if (count >= *n) {
+            *n = *n * 2;
+            *tokens = realloc(*tokens, *n * sizeof(char*));
+            if (!*tokens)
+                return -1;
+        }
+        if (!strchr(delims, *token_end)) {
+            // ignore leading whitespace
+            if (!token_begin) {
+                token_begin = token_end;
+            }
+            token_size++;
+            token_end++;
+        }
         else { // new delimiter found, store the current token
             if (token_begin) {
                 (*tokens)[count] = malloc(token_size+1);
