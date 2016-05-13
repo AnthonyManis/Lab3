@@ -9,16 +9,16 @@
 
 #define HEAP_SIZE 400
 
-// the heap array we're maintaining
-Node *HeapArray;
-int nextBlockNumber = 1;
-
 typedef struct Node {
     char data;
     int block_number;
     int size;
     bool allocated;
 } Node;
+
+// the heap array we're maintaining
+Node *HeapArray;
+int nextBlockNumber = 1;
 
 // Prototypes --- User Functions
 int allocate(int number_of_bytes);
@@ -66,9 +66,9 @@ int indexOfBlockNumber(int block_number)
             break;
         }
     }
-    
+
     return i;
-}   
+}
 
 // Anthony
 int allocate(int number_of_bytes)
@@ -166,18 +166,47 @@ void set_block_size(Node *p, int size) {
     p->size = size;
 }
 
-// Mukesh 
+// Mukesh
 // (free is conflicting with C, needed to rename)
 void deallocate(int block_number)
 {
-    // frees the memory
+    int index = indexOfBlockNumber(block_number);
+    HeapArray[index].block_number = 0;
+    HeapArray[index].allocated = 0;
+
 }
 
 // Mukesh
 void blocklist()
 {
+
+
+    Node *p = HeapArray;
+
     // print out the heap
     // size allocated   start   end (addresses in Hex)
+    printf("%s   %s     %s            %s\n", "Size", "Allocated", "Start", "End");
+    int start = 0;
+    int end;
+    while (p < HeapArray + HEAP_SIZE) {
+
+        printf("%3d", p->size);
+
+        if (is_allocated(p) == 0)
+            printf("  %8s", "No");
+        else
+            printf("  %8s", "Yes");
+
+
+        printf("      0x%08x", start);
+        end = start + p->size;
+        printf("      0x%08x\n", end);
+        start = end + 1;
+
+        p = p + block_size(p);
+
+    }
+
 }
 
 // Ryan
@@ -272,7 +301,7 @@ void promptUser() {
                 // void blocklist()
                 blocklist();
             }
-            else if (!strcmp(argv[0], "writeheap")) { 
+            else if (!strcmp(argv[0], "writeheap")) {
                 if (argc == 4) {
                     // void writeheap(int the_block_number, char CTW, int copies)
                     int the_block_number = atoi(argv[1]);
@@ -298,7 +327,7 @@ void promptUser() {
                 }
             }
             else if (!strcmp(argv[0], "quit")) {
-                // void quit() 
+                // void quit()
                 quit();
                 break;
             }
@@ -383,7 +412,7 @@ void initialize() {
         HeapArray[i].data = '\0';
         HeapArray[i].allocated = 0;
     }
-    
+
     // HeapArray[0] is Header
     // Initial value is unallocated, size HEAP_SIZE
     set_block_size(HeapArray, HEAP_SIZE);
