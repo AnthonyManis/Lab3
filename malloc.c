@@ -10,6 +10,7 @@
 #define HEAP_SIZE 400
 
 // the heap array we're maintaining
+Node *HeapArray;
 int nextBlockNumber = 1;
 
 typedef struct Node {
@@ -19,7 +20,6 @@ typedef struct Node {
     bool allocated;
 } Node;
 
-Node *HeapArray;
 // Prototypes --- User Functions
 int allocate(int number_of_bytes);
 void deallocate(int block_number);
@@ -376,10 +376,6 @@ void initialize() {
     // statically allocate initial array
     HeapArray = malloc(HEAP_SIZE * sizeof(Node));
 
-    // HeapArray[0] is Header
-    // Initial value is unallocated, size HEAP_SIZE
-    set_block_size(HeapArray, HEAP_SIZE);
-    set_allocated(HeapArray, 0);
     int i;
     for (i = 0 ; i < HEAP_SIZE ; i++) {
         HeapArray[i].size = 0;
@@ -387,7 +383,11 @@ void initialize() {
         HeapArray[i].data = '\0';
         HeapArray[i].allocated = 0;
     }
-    HeapArray[0].size = HEAP_SIZE;
+    
+    // HeapArray[0] is Header
+    // Initial value is unallocated, size HEAP_SIZE
+    set_block_size(HeapArray, HEAP_SIZE);
+    set_allocated(HeapArray, 0);
 }
 
 
