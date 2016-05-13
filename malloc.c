@@ -44,9 +44,6 @@ void initialize();
 
 int indexOfBlockNumber(int block_number)
 {
-    if (block_number == 1)
-        return 0;
-
     int i = 0;
 
     while (HeapArray[i].block_number != block_number)
@@ -417,7 +414,6 @@ void initialize() {
     // HeapArray[0] is Header
     // Initial value is unallocated, size HEAP_SIZE
     set_block_size(HeapArray, HEAP_SIZE);
-    set_allocated(HeapArray, 0);
 }
 
 
