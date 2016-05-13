@@ -199,7 +199,7 @@ void blocklist()
 
 
         printf("      0x%08x", start);
-        end = start + p->size;
+        end = start + p->size - 1;
         printf("      0x%08x\n", end);
         start = end + 1;
 
