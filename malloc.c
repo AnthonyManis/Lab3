@@ -44,12 +44,6 @@ void initialize();
 
 int indexOfBlockNumber(int block_number)
 {
-    if (block_number < 1)
-    {
-        printf("Block number can not be less than 1");
-        return -1;
-    }
-
     if (block_number == 1)
         return 0;
 
@@ -62,7 +56,7 @@ int indexOfBlockNumber(int block_number)
         else
         {
             i = -1;
-            printf("Block number does not exists");
+            printf("Block number does not exist.\n");
             break;
         }
     }
@@ -73,11 +67,6 @@ int indexOfBlockNumber(int block_number)
 // Anthony
 int allocate(int number_of_bytes)
 {
-    if (number_of_bytes <= 0 ) {
-        printf("Could not allocate %d bytes.\n", number_of_bytes);
-        return 0;
-    }
-
     Node *p = HeapArray;
 
     // find a free header that fits number_of_bytes
@@ -281,6 +270,8 @@ void promptUser() {
                     int number_of_bytes = atoi(argv[1]);
                     if (number_of_bytes > 0)
                         allocate(number_of_bytes);
+                    else
+                        printf("Cannot allocate < 1 byte.\n");
                 }
                 else {
                     printf("Usage: allocate [number_of_bytes]\n");
@@ -292,6 +283,8 @@ void promptUser() {
                     int block_number = atoi(argv[1]);
                     if (block_number > 0)
                         deallocate(block_number);
+                    else
+                        printf("Block number can not be less than 1.\n");
                 }
                 else {
                     printf("Usage: free [block_number]\n");
@@ -309,6 +302,10 @@ void promptUser() {
                     int copies = atoi(argv[3]);
                     if ( (the_block_number > 0) && (copies > 0) )
                         writeheap(the_block_number, CTW, copies);
+                    else if (the_block_number < 1)
+                        printf("Block number can not be less than 1.\n");
+                    else
+                        printf("Must write at least 1 byte.\n");
                 }
                 else {
                     printf("Usage: writeheap [block_number] [char] [amount]\n");
@@ -321,6 +318,10 @@ void promptUser() {
                     int number_of_bytes = atoi(argv[2]);
                     if ( (block_number > 0) && (number_of_bytes) > 0)
                         printheap(block_number, number_of_bytes);
+                    else if (block_number < 1)
+                        printf("Block number can not be less than 1.\n");
+                    else
+                        printf("Must read at least 1 byte.\n");
                 }
                 else {
                     printf("Usage: printheap [block_number] [amount]\n");
