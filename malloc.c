@@ -10,7 +10,6 @@
 #define HEAP_SIZE 400
 
 // the heap array we're maintaining
-Node *HeapArray;
 int nextBlockNumber = 1;
 
 typedef struct Node {
@@ -20,6 +19,7 @@ typedef struct Node {
     bool allocated;
 } Node;
 
+Node *HeapArray;
 // Prototypes --- User Functions
 int allocate(int number_of_bytes);
 void deallocate(int block_number);
@@ -44,6 +44,12 @@ void initialize();
 
 int indexOfBlockNumber(int block_number)
 {
+    if (block_number < 1)
+    {
+        printf("Block number can not be less than 1");
+        return -1;
+    }
+
     if (block_number == 1)
         return 0;
 
@@ -51,7 +57,14 @@ int indexOfBlockNumber(int block_number)
 
     while (HeapArray[i].block_number != block_number)
     {
-        i += HeapArray[i].size;
+        if (i+HeapArray[i].size < HEAP_SIZE)
+            i += HeapArray[i].size;
+        else
+        {
+            i = -1;
+            printf("Block number does not exists");
+            break;
+        }
     }
     
     return i;
@@ -174,14 +187,17 @@ void writeheap(int block_number, char CTW, int copies)
     // if the block number exists
     // go to that block number
     int index = indexOfBlockNumber(block_number);
-    int i;
-    int block_size = HeapArray[index].size;
-    // copy as many as the header of the block number says there are spaces
-    for (i = 0; index < HEAP_SIZE && i < block_size && i < copies; ++i)
+    if (index > -1)
     {
-        // convert char to binary number
-        HeapArray[index].data = CTW;
-        ++index;
+        int i;
+        int block_size = HeapArray[index].size;
+        // copy as many as the header of the block number says there are spaces
+        for (i = 0; index < HEAP_SIZE && i < block_size && i < copies; ++i)
+        {
+            // convert char to binary number
+            HeapArray[index].data = CTW;
+            ++index;
+        }
     }
 }
 
@@ -190,13 +206,16 @@ void printheap(int block_number, int number_of_bytes)
 {
     // prints out all the bytes starting at the block number given
     int index = indexOfBlockNumber(block_number);
-    int i;
-    for (i = 0; index < HEAP_SIZE && i < number_of_bytes; ++i)
+    if (index > -1)
     {
-        printf("%c",HeapArray[index].data);
-        ++index;
+        int i;
+        for (i = 0; index < HEAP_SIZE && i < number_of_bytes; ++i)
+        {
+            printf("%c",HeapArray[index].data);
+            ++index;
+        }
+        printf("\n");
     }
-    printf("\n");
 }
 
 void quit() {
